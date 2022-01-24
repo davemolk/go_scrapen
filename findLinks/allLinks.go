@@ -13,6 +13,7 @@ func main() {
 		colly.AllowedDomains("en.wikipedia.org"),
 	)
 
+	// find and print all links
 	c.OnHTML(".mw-parser-output", func(e *colly.HTMLElement) {
 		links := e.ChildAttrs("a", "href")
 		fmt.Println(links)
