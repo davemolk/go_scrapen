@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/url"
 
 	"github.com/gocolly/colly"
 )
 
-// sentdex sitemap
+/*
+// Sitemap scrapes sentdex's sitemap and returns all URLs
 func sitemap() {
 	// initialize a slice
 	knownURLs := []string{}
@@ -26,23 +29,42 @@ func sitemap() {
 		fmt.Println(url)
 	}
 }
+*/
 
 // scrape sentdex
 func main() {
 
-	sitemap()
+	// sitemap()
 	
 	c := colly.NewCollector(
 		colly.AllowedDomains("pythonprogramming.net"),
 	)
 
 	// find and print all links
-	// c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-	// 	link := e.Attr("href")
-	// 	fmt.Println(link)
-	// 	// optional visit link
-	// 	// c.Visit(e.Request.AbsoluteURL(link))
-	// })
+	links := []string{}
+	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		link := e.Attr("href")
+		links = append(links, link)
+		// optional visit link
+		// c.Visit(e.Request.AbsoluteURL(link))
+	})
+
+	c.Visit("https://pythonprogramming.net/parsememcparseface/")
+	
+	fmt.Println("we found", len(links), "URLs")
+
+	// convert relative links to absolute
+	base, err := url.Parse("https://pythonprogramming.net")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, link := range links[:5] {
+		u, err := url.Parse(link)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(base.ResolveReference(u))
+	}
 
 	
 	// print intro
@@ -125,7 +147,7 @@ func main() {
 
 
 	// sitemap
-	
+	// see function call up top!
 
 
 
@@ -133,6 +155,6 @@ func main() {
 	// 	fmt.Println(e.ChildText("p code"))
 	// })
 
-	c.Visit("https://pythonprogramming.net/parsememcparseface/")
+	// c.Visit("https://pythonprogramming.net/parsememcparseface/")
 
 }
