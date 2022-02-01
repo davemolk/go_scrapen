@@ -1,8 +1,16 @@
 package main
 
-/*
+import (
+	"encoding/csv"
+	"fmt"
+	"log"
+	"os"
 
-func allBooks() {
+	"github.com/gocolly/colly"
+)
+
+
+func main() {
 	fName := "books.csv"
 	f, e := os.Create(fName)
 	if e != nil {
@@ -29,6 +37,11 @@ func allBooks() {
 		})
 	})
 
+	c.OnHTML("li.next", func(e *colly.HTMLElement) {
+		nextPage := e.Request.AbsoluteURL(e.ChildAttr("a", "href"))
+		c.Visit(nextPage)
+	})
+
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
 	})
@@ -38,12 +51,15 @@ func allBooks() {
 		log.Println("error:", e, r.Request.URL, string(r.Body))
 	})
 
-	for i := 1; i <= 50; i++ {
-		url := fmt.Sprintf("https://books.toscrape.com/catalogue/page-%d.html", i)
-		c.Visit(url)
-	}
+	// pagination using num of pages
+	// for i := 1; i <= 50; i++ {
+	// 	url := fmt.Sprintf("https://books.toscrape.com/catalogue/page-%d.html", i)
+	// 	c.Visit(url)
+	// }
+
+
+	c.Visit("https://books.toscrape.com/")
 
 	log.Printf("Scraping finished, check file %q for results\n", fName)
 }
 
-*/

@@ -2,8 +2,7 @@ package main
 
 /*
 
-
-func asyncBaby() {
+func main() {
 	fName := "books.csv"
 	f, e := os.Create(fName)
 	if e != nil {
@@ -22,7 +21,19 @@ func asyncBaby() {
 		colly.Async(true),
 	)
 
+
+	// how to limit the speed
+	c.Limit(&colly.LimitRule{
+		RandomDelay: 3 * time.Second,
+		// Parallelism: 5,
+	})
+
+
+	// randomize User-Agent
+	extensions.RandomUserAgent(c)
+
 	baseURL := "https://books.toscrape.com/catalogue/"
+
 	c.OnHTML("ol.row li", func(e *colly.HTMLElement) {
 		writer.Write([]string{
 			e.ChildAttr("img", "alt"),
@@ -33,6 +44,7 @@ func asyncBaby() {
 	})
 
 	c.OnRequest(func(r *colly.Request) {
+		// fmt.Println("UserAgent\n", r.Headers.Get("User-Agent"))
 		fmt.Println("Visiting", r.URL.String())
 	})
 
@@ -50,6 +62,5 @@ func asyncBaby() {
 
 	log.Printf("Scraping finished, check file %q for results\n", fName)
 }
-
 
 */
